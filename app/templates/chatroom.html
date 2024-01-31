@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chatroom</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body>
+    <h2 class="mb-5 fron-sans text-3xl text-center font-bold text-gray-900 sm:text-4xl">
+        Websocket
+        <span class="inline-block text-rose-500">Chat</span>
+    </h2>
+    <div id="room_id" style="display: none; text-center;">{{ room_id }}</div>
+    <form action="" onsumbit="sendMessage(event)" style="text-align: center">
+        <input type="text" id="messageText" autocomplete="off" class="w-lg bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5">
+            <button type="button" class="text-white bg-rose-500 font-lg rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Send</button>
+    </form>
+    <ul id="messages">
+    </ul>
+        <script>
+            roomId = document.getElementById('room-id').textContent
+            var ws = new WebSocket(`ws://localhost:8000/${roomId}`);
+            console.log("Websocket endpoint is ",ws)
+            ws.onmessage = function(event) {
+                var messages = document.getElementById('messages')
+                var message = document.createElement('li')
+                var content = document.createTextNode(event.data)
+                message.appendChild(content)
+                messages.appendChild(message)
+            };
+            function sendMessage(event) {
+                var input = document.getElementById("messageText")
+                ws.send(input.value)
+                input.value = ''
+                event.preventDefault()
+            }
+        </script>
+    </body>
+</html>
